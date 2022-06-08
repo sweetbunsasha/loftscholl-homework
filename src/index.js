@@ -77,15 +77,26 @@ function returnCounter(number = 0) {
  Пример:
    returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
  */
+// function returnArgumentsArray(...str) {
+//     let res = [];
+
+//     for (let i = 0; i < str.length; i++) {
+//         res.push(str[i])
+//     }
+
+//     return res;
+// }
+
+// function returnArgumentsArray(...str) {
+
+//     return Array(...str);
+// }
+
 function returnArgumentsArray(...str) {
-    let res = [];
-
-    for (let i = 0; i < str.length; i++) {
-        res.push(str[i])
-    }
-
-    return res;
+    return [...str]
 }
+
+// у стрелочных функций нет контекста
 
 /*
  Задание 6 *:
@@ -103,7 +114,7 @@ function returnArgumentsArray(...str) {
    console.log(newSum()) выведет 6
  */
 function bindFunction(fn, ...arg) {
-    return fn.bind(fn, ...arg) // я не поняла что я сделала :))
+    return fn.bind(null, ...arg) // я не поняла что я сделала :)) конекст передается на первом месте, если конеткст не нужен - ставлю нулл, мне нужно было только аргументы передать в этой задаче
 }
 
 export {
