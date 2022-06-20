@@ -17,24 +17,20 @@
    isAllTrue([100, 2, 3, 4, 5], n => n < 10) // вернет false
  */
 
-function isAllTrue(array, fn) { // почему если использовать трай кетч- тесты не проходят?
+function isAllTrue(array, fn) { // почему если использовать трай кетч- тесты не проходят? 
+    //потому что тестам необходимо, чтобы ошибка выбросилась, но если я оберну ее в трай - она обработается с помощью кэтч, но не выбросится
 
-    // как вообще понять как работает fn? // как смотреть что происходит в тестах?
     var trueItem = 0;
     var falseItem = 0;
-    var arr =[]; // для проверки
 
-    if (( !Array.isArray(array)) || (array.length <= 0)) { // как узнать, что не массив без метода массива isArray
+    if ((!(array instanceof Array)) || (array.length <= 0)) {
         throw new Error('empty array');
     } else if (typeof fn !== 'function') {
         throw new Error('fn is not a function');
     } else {
-        // console.log(array, 'array')
         for (let i = 0; i < array.length; i++) {
 
             let resOfFn = fn(array[i]);
-
-            arr.push(resOfFn); // для проврки: входящий массив [true, null, null, null], после fn -> [1, 2, 3, 4] - почему не тру/фолс? 
 
             if (!resOfFn == true) {
                 falseItem++;
@@ -42,7 +38,6 @@ function isAllTrue(array, fn) { // почему если использоват�
                 trueItem++;
             }
         }
-        // console.log(arr, 'arr')
 
         if (array.length == trueItem) {
             return true;
@@ -70,7 +65,7 @@ function isAllTrue(array, fn) { // почему если использоват�
  */
 function isSomeTrue(array, fn) {
 
-    if (( !Array.isArray(array)) || (array.length <= 0)) { // как узнать, что не массив без метода массива isArray
+    if ((!(array instanceof Array)) || (array.length <= 0)) { // как узнать, что не массив без метода массива isArray
         throw new Error('empty array');
     } else if (typeof fn !== 'function') {
         throw new Error('fn is not a function');
@@ -113,9 +108,10 @@ function returnBadArguments(fn) { // как понять какого типа �
     if (arguments.length !== 1) {
         for (let i = 1; i < arguments.length; i++) {
             try { // пробуй это
-                fn((arguments[i])); // и если в теле try будет error
+                fn((arguments[i])); // и если в теле try будет error (то есть fn выбросит исключение для i)
             } catch (e) { // сразу переходим сюда, "ловим" ее
                 res.push(arguments[i]) // и делаем с ней что-то
+                // при этом произойдет только выход из try, но программа пойдет дальше
             }
      
         }
