@@ -168,35 +168,34 @@ function deleteTextNodesRecursive(where) {
    }
  */
 
-function collectDOMStat(root) { // это я написала НЕ САМА, нашла решение и сама расписала его по строкам, пробую повторить по своему объяснению
-  // как создать узел? например я хочу сама это попрактиковать и пообходить деревья 
+function collectDOMStat(root) { // попробовала сама
   const res = {
     tags: {},
     classes: {},
     texts: 0
   };
-  function scan(root) { // пишем функцию сканирования
-    for (const child of root.childNodes) { // обходим всех детей в родительском цикле
+  function scan(elems) {
+    for (const child of elems.childNodes) {
       if (child.nodeType == Node.TEXT_NODE) {
         res.texts++;
-      } else if (child.nodeType == Node.ELEMENT_NODE) {  // ЕСЛИ УЗЛОВОЙ ЭЛЕМЕНТ
-        if (child.tagName in res.tags) { // ПРОВЕРКА наличия такого тэг нейм (такого имени свойства) у child в объекте тэг у результата
-          res.tags[child.tagName]++; // если там уже есть такой тэг нейм (такое имя свойства) - мы увеличиваем его значение на единицу
+      } else if (child.nodeType == Node.ELEMENT_NODE) {
+        if (child.tagName in res.tags) {
+          res.tags[child.tagName]++
         } else {
-          res.tags[child.tagName] = 1; // если его там не было - мы добавляем его в объект тэгс(в результаты), имя будет название класса(child.tagName) а значение будет равно единице
+          res.tags[child.tagName] = 1
         }
-        for (const className of child.classList) { // обходим все классы ОДНОГО ребенка!! типа если у него есть несколько классов class="www ggg zzz">
-          if (className in res.classes) { // проверка наличия  такого className в классах в результате
-            res.classes[className]++; // если в результате уже есть такой класс - увеличиваем на единицу
+        for (const className of child.classList) {
+          if (className in res.classes) {
+            res.classes[className]++
           } else {
-            res.classes[className] = 1; // если нет такого класса - добавлем свойство с именем className и присваиваем единцу
+            res.classes[className] = 1
           }
         }
-        scan(child); // ВЫЗЫВАЕМ функцию ВНУТРИ ЦИКЛА  для каждого ребенка родительского элемента, то есть уходя вглубь, пока дети не кончатся
       }
+      scan(child);
     }
   }
-  scan(root); //вызываем функцию для родителя
+  scan(root);
   return res;
 }
 /*
