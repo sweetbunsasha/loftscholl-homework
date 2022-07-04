@@ -233,15 +233,15 @@ function collectDOMStat(root) { // попробовала сама
 function observeChildNodes(where, fn) { // обезрвер написала сама, почитала что это и как его делать, сделала объянения.
 
   function callback(mutations, observer) {
-    let div;
+    let div = [];
     for (let mutation of mutations) {
       if (mutation.type == 'childList') {
         //затык был только в том, как в nodes: [div] положить удаленные/добавленные узлы
 
         if (mutation.addedNodes.length) {
-          div = [...mutation.addedNodes] // рест??? мы говрим типа вытащи все значения из коллекции, и положи в [] по порядку
+          div.push(...mutation.addedNodes) // здесь, и в случае с div = [...mutation.addedNodes] -спред
         } else {
-          div = [...mutation.removedNodes]
+          div.push(...mutation.removedNodes)
         }
         fn({
           type: mutation.addedNodes.length ? 'insert' : 'remove',
