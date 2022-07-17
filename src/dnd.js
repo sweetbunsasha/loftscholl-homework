@@ -30,6 +30,9 @@ function createDiv() {
     const div = document.createElement('div');
 
     div.classList.add('draggable-div');
+    div.setAttribute('draggable', true);
+    div.setAttribute('data-item', 1)
+
     div.style.background = 'red';
     div.style.top = '50px';
     div.style.left = '50px';
@@ -48,9 +51,6 @@ function createDiv() {
       addListeners(newDiv);
     */
 function addListeners(target) {
-
-// я здесь ничего не сделала, но тесты все проходят
-
 }
    
 let addDivButton = homeworkContainer.querySelector('#addDiv');
