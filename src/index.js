@@ -27,13 +27,25 @@ function delayPromise(seconds) {
    Пример:
      loadAndSortTowns().then(towns => console.log(towns)) // должна вывести в консоль отсортированный массив городов
    */
-  function loadAndSortTowns() {
+function loadAndSortTowns() {
+
     return new Promise((resolve, reject) => {
-      
+
+        const towns = new XMLHttpRequest(); // 
+        
+        towns.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
+        towns.responseType = 'json'; // заранее указываем, что гет обращается к джисон, чтобы не парсить ответ 
+        towns.send();
+        towns.addEventListener('load', () => { // когда ответ загузился
+
+            const resp = towns.response; // получаем данные
+
+            resolve(resp.sort((a, b) => a.name > b.name ? 1 : -1)) // разрешаем отсортированным массивом
+        })
     })
-  }
+}
   
-  export {
-      delayPromise,
-      loadAndSortTowns
-  };
+export {
+    delayPromise,
+    loadAndSortTowns
+};
