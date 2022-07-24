@@ -38,20 +38,23 @@ const homeworkContainer = document.querySelector('#homework-container');
  */
 function loadTowns() {
 
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
 
-        const towns = new XMLHttpRequest();
-        
-        towns.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
-        towns.responseType = 'json'; // заранее указываем, что гет обращается к джисон, чтобы не парсить ответ 
-        towns.send();
-        towns.addEventListener('load', () => {
-            const townsResp = towns.response;
+    const towns = new XMLHttpRequest();
 
-            resolve(townsResp.sort((a, b) => a.name > b.name ? 1 : -1));
-        })
+    towns.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
+    towns.responseType = 'json'; // заранее указываем, что гет обращается к джисон, чтобы не парсить ответ 
+    towns.send();
+    towns.addEventListener('load', () => {
+      const townsResp = towns.response;
 
+      resolve(townsResp.sort((a, b) => a.name > b.name ? 1 : -1));
     })
+    towns.addEventListener('error', () => {
+      reject();
+    })
+
+  })
 }
 
 /*
@@ -59,14 +62,18 @@ function loadTowns() {
  Проверка должна происходить без учета регистра символов
 
  Пример:
-   isMatching('Moscow', 'moscow') // true
+   isMatching('Moscow', 'oscow') // true
    isMatching('Moscow', 'mosc') // true
    isMatching('Moscow', 'cow') // true
    isMatching('Moscow', 'SCO') // true
-   isMatching('Moscow', 'Moscov') // false
+   isMatching('Moscow', 'Moscov') // false -1
  */
 function isMatching(full, chunk) {
 
+  return full.toLowerCase().indexOf(chunk.toLowerCase()) !== -1;
+
+  // -1 если chunk нет в фулл
+  // если есть - номер. с которого начинается подстрока
 }
 
 /* Блок с надписью "Загрузка" */
@@ -77,31 +84,57 @@ const filterBlock = homeworkContainer.querySelector('#filter-block');
 const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
+const button = document.createElement('button');
+
+filterBlock.appendChild(button);
+button.innerText = 'Повторить';
+
+button.addEventListener('click', loadTowns)
 
 let list;
 
 loadTowns()
-    .then((listOfCities) => { // здесь то, что мы передали в резолв, то есть список городов
+  .then((listOfCities) => { // здесь то, что мы передали в резолв, то есть список городов
+    console.log(listOfCities, 'listOfCities')
 
-      console.log(listOfCities, 'listOfCities')
+    list = listOfCities;
+    loadingBlock.style.display = 'none';
+    filterInput.style.display = 'inline-block';
+    button.style.display = 'none'
+  })
+  .catch(() => {
+    loadingBlock.style.display = 'none';
+    filterInput.style.display = 'none';
+    filterResult.innerText = 'не удалось загрузить';
+    button.style.display = 'inline-block';
+  })
 
-      list = listOfCities;
-      loadingBlock.style.display = 'none';
-      filterBlock.style.display = 'inline-block';
+filterInput.addEventListener('keyup', function (e) {
+
+  filterResult.innerHTML = '';
+
+
+  console.log(filterInput.value) // то, что вводим в инпут
+
+  if (filterInput.value) {
+    const newList = list.filter((item) => isMatching(item.name, filterInput.value));
+
+    console.log(newList, 'newList');
+
+    newList.forEach((item) => {
+
+      const p = document.createElement('p');
+      p.innerText = item.name;
+      filterResult.appendChild(p);
 
     })
 
-filterInput.addEventListener('keyup', function(e) {
 
-    for (const city of list) {
-  // здесь надо вызывать isMatching, первый аргумент это город из списка, второй - то, что введено в инпут
-    }
-
-  console.log(filterInput.value) // то, что вводим в инпут
+  }
 
 });
 
 export {
-    loadTowns,
-    isMatching
+  loadTowns,
+  isMatching
 };
